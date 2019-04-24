@@ -1,5 +1,8 @@
 # Sort Visualizer
 Sort visualizer is a program to visualize various sorting algorithms.  
+
+[![](https://i.imgur.com/nlqapHv.png)](https://www.youtube.com/watch?v=GuIIWjKc3fY)  
+
 At the moment, it has these sorting algorithms implemented:  
 
 - Selection Sort
@@ -31,3 +34,4 @@ You will need the `clang` compiler, `SDL2`, `SDL2_image`, and [embed](https://gi
 `clang` and `embed` need to be in your path.  
 ### GNU/Linux
 Do `make` to compile, `make RELEASE=1` to compile in release mode, `make run` to compile and run, and `make run RELEASE=1` to compile in release mode and run.  
+
