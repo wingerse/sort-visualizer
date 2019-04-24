@@ -30,6 +30,7 @@ void Game_init(Game *g, SDL_Window *w, SDL_Renderer *r)
     g->w = w;
     g->r = r;
     g->run_sort = false;
+    g->ar = NULL;
     Game_change_ar_len(g, DEFAULT_AR_LEN);
     g->comparisions = 0;
     g->ar_access = 0;
