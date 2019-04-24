@@ -7,8 +7,8 @@ SortFuncInterface sort_funcs[SORT_FUNCS_COUNT] = {
     {insertion_sort, "Insertion Sort"},
     {bubble_sort, "Bubble Sort"},
     {merge_insert_sort, "Merge Insert Sort"},
-    {merge_sort, "Merge Sort"},
-    {merge_sort_bottom_up, "Merge Sort Buttom-Up"},
+    {merge_sort, "Merge Sort (Top-Down)"},
+    {merge_sort_bottom_up, "Merge Sort (Buttom-Up)"},
 };
 
 void selection_sort(Game *g)
