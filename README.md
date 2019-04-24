@@ -1,6 +1,8 @@
 # Sort Visualizer
 Sort visualizer is a program to visualize various sorting algorithms.  
 
+Click the below image for the video:  
+
 [![](https://i.imgur.com/nlqapHv.png)](https://www.youtube.com/watch?v=GuIIWjKc3fY)  
 
 At the moment, it has these sorting algorithms implemented:  
