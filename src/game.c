@@ -202,6 +202,7 @@ void Game_run(Game *g)
         
         if (g->run_sort) {
             Game_shuffle(g);
+            Game_reset_marks(g);
             g->comparisions = 0;
             g->ar_access = 0;
             sort_funcs[g->sort_func_index].f(g);

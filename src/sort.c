@@ -1,4 +1,5 @@
 #include "sort.h"
+#include <stdio.h>
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -9,6 +10,7 @@ SortFuncInterface sort_funcs[SORT_FUNCS_COUNT] = {
     {merge_insert_sort, "Merge Insert Sort"},
     {merge_sort, "Merge Sort (Top-Down)"},
     {merge_sort_bottom_up, "Merge Sort (Buttom-Up)"},
+    {counting_sort, "Counting Sort"},
 };
 
 void selection_sort(Game *g)
@@ -215,5 +217,32 @@ void merge_sort_bottom_up(Game *g)
 {
     int *tmpar = malloc((size_t)g->ar_len * sizeof(int));
     _merge_sort_bottom_up(g, 0, g->ar_len, tmpar);
+    free(tmpar);
+}
+
+void counting_sort(Game *g)
+{
+    int *tmpar = calloc((size_t)g->ar_len, sizeof(int));
+    for (int i = 0; i < g->ar_len; i++) {
+        g->marks[0] = i;
+        tmpar[g->ar[i]-1]++;
+        g->ar_access++;
+        Game_draw(g);
+        Game_delay(g);
+    }
+
+    int k = 0;
+    for (int i = 0; i < g->ar_len; i++) {
+        g->marks[0] = i;
+
+        for (int j = 0; j < tmpar[i]; j++) {
+            g->ar[k] = i + 1;
+            g->ar_access++;
+            k++;
+        }
+        Game_draw(g);
+        Game_delay(g);
+    }
+
     free(tmpar);
 }

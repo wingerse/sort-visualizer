@@ -2,7 +2,7 @@
 
 #include "game.h"
 
-#define SORT_FUNCS_COUNT 6
+#define SORT_FUNCS_COUNT 7
 
 typedef void SortFunc(Game *g);
 
@@ -19,3 +19,4 @@ void bubble_sort(Game *g);
 void merge_insert_sort(Game *g);
 void merge_sort(Game *g);
 void merge_sort_bottom_up(Game *g);
+void counting_sort(Game *g);
