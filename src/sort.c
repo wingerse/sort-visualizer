@@ -3,17 +3,7 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-SortFuncInterface sort_funcs[SORT_FUNCS_COUNT] = {
-    {selection_sort, "Selection Sort"},
-    {insertion_sort, "Insertion Sort"},
-    {bubble_sort, "Bubble Sort"},
-    {merge_insert_sort, "Merge Insert Sort"},
-    {merge_sort, "Merge Sort (Top-Down)"},
-    {merge_sort_bottom_up, "Merge Sort (Buttom-Up)"},
-    {counting_sort, "Counting Sort"},
-};
-
-void selection_sort(Game *g)
+static void selection_sort(Game *g)
 {
     for (int i = 0; i < g->ar_len; i++) {
         g->marks[1] = i;
@@ -30,16 +20,16 @@ void selection_sort(Game *g)
                 min_index = j;
                 g->marks[2] = min_index;
             }
-            if (g->quit) { return; }
             Game_draw(g);
             Game_delay(g);
+            if (g->quit) { return; }
         }
 
         swap(g->ar, i, min_index);
     }
 }
 
-void insertion_sort(Game *g) 
+static void insertion_sort(Game *g) 
 {
     for (int i = 1; i < g->ar_len; i++) {
         g->marks[1] = i;
@@ -50,9 +40,9 @@ void insertion_sort(Game *g)
             g->marks[0] = j;
             g->marks[2] = j-1;
             swap(g->ar, j-1, j); 
-            if (g->quit) { return; }
             Game_draw(g);
             Game_delay(g);
+            if (g->quit) { return; }
 
             g->ar_access += 2;
             g->comparisions++;
@@ -60,7 +50,7 @@ void insertion_sort(Game *g)
     }
 }
 
-void bubble_sort(Game *g)
+static void bubble_sort(Game *g)
 {
     for (int i = g->ar_len-1; i > 0; i--) {
         g->marks[1] = i;
@@ -73,9 +63,9 @@ void bubble_sort(Game *g)
             if (g->ar[j] > g->ar[j+1]) {
                 swap(g->ar, j, j+1);
             }
-            if (g->quit) { return; }
             Game_draw(g);
             Game_delay(g);
+            if (g->quit) { return; }
         }
     }
 }
@@ -97,9 +87,9 @@ static void merge_insert(Game *g, int start, int mid, int end)
                 g->marks[0] = j+1;
 
                 swap(g->ar, j, j+1);
-                if (g->quit) { return; }
                 Game_draw(g);
                 Game_delay(g);
+                if (g->quit) { return; }
 
                 g->ar_access += 2;
                 g->comparisions++;
@@ -116,10 +106,11 @@ static void _merge_insert_sort(Game *g, int start, int end)
         _merge_insert_sort(g, start, mid);
         _merge_insert_sort(g, mid, end);
         merge_insert(g, start, mid, end);
+        if (g->quit) { return; }
     }
 }
 
-void merge_insert_sort(Game *g)
+static void merge_insert_sort(Game *g)
 {
     _merge_insert_sort(g, 0, g->ar_len);
 }
@@ -144,9 +135,9 @@ static void merge(Game *g, int start, int mid, int end, int *tmpar)
             tmpar[k] = g->ar[j];
             j++;
         }
-        if (g->quit) { return; }
         Game_draw(g);
         Game_delay(g);
+        if (g->quit) { return; }
         k++;
     }
 
@@ -178,6 +169,7 @@ static void _merge_sort(Game *g, int start, int end, int *tmpar)
         tmpar = t;
 
         merge(g, start, mid, end, tmpar);
+        if (g->quit) { return; }
 
         // swap back because I'm done with merging
         t = g->ar;
@@ -189,7 +181,7 @@ static void _merge_sort(Game *g, int start, int end, int *tmpar)
     }
 }
 
-void merge_sort(Game *g)
+static void merge_sort(Game *g)
 {
     int *tmpar = malloc((size_t)g->ar_len * sizeof(int));
     memcpy(tmpar, g->ar, sizeof(int)*(size_t)g->ar_len);
@@ -207,20 +199,21 @@ static void _merge_sort_bottom_up(Game *g, int start, int end, int *tmpar)
         // merge all the sublists
         for (int i = 0; i < len; i += 2*w) {
             merge(g, i, MIN(i+w, len), MIN(i+2*w, len), tmpar);
+            if (g->quit) { return; }
         }
         // they were merged into tmpar so we need to copy back to array
         memcpy(g->ar, tmpar, (size_t)len*sizeof(int));
     }
 }
 
-void merge_sort_bottom_up(Game *g)
+static void merge_sort_bottom_up(Game *g)
 {
     int *tmpar = malloc((size_t)g->ar_len * sizeof(int));
     _merge_sort_bottom_up(g, 0, g->ar_len, tmpar);
     free(tmpar);
 }
 
-void counting_sort(Game *g)
+static void counting_sort(Game *g)
 {
     int *tmpar = calloc((size_t)g->ar_len, sizeof(int));
     for (int i = 0; i < g->ar_len; i++) {
@@ -229,6 +222,7 @@ void counting_sort(Game *g)
         g->ar_access++;
         Game_draw(g);
         Game_delay(g);
+        if (g->quit) { return; }
     }
 
     int k = 0;
@@ -242,7 +236,87 @@ void counting_sort(Game *g)
         }
         Game_draw(g);
         Game_delay(g);
+        if (g->quit) { return; }
     }
 
     free(tmpar);
 }
+
+static int partition(Game *g, int start, int end, int pivot_index)
+{
+    int pivot = g->ar[pivot_index];
+
+    for (int i = start; i < end; ) {
+        if (i == pivot_index) {
+            // skip
+            i++;
+            continue;
+        }
+
+        g->marks[2] = i;
+        g->marks[1] = pivot_index;
+        g->ar_access++;
+        int e = g->ar[i];
+
+        g->comparisions++;
+        if (e < pivot && i > pivot_index) {
+            for (int j = i; j > pivot_index; j--) {
+                g->marks[0] = j;
+                g->ar_access++;
+                swap(g->ar, j-1, j);
+                Game_draw(g);
+                Game_delay(g);
+                if (g->quit) { return pivot_index; }
+            } 
+            pivot_index++;
+            // we increment i here because although elements have been shifted up to i, and that element is the previous
+            // element, which we have already checked. So we will skip it.
+            i++;
+        } else if (e > pivot && i < pivot_index) {
+            for (int j = i; j < pivot_index; j++) {
+                g->marks[0] = j;
+                g->ar_access++;
+                swap(g->ar, j, j+1);
+                Game_draw(g);
+                Game_delay(g);
+                if (g->quit) { return pivot_index; }
+            } 
+            pivot_index--;
+            // will NOT increment i here because elements have been shifted down to i and we need to check
+            // it in the next iteration again. because it is the next element, which we have not checked yet.
+        } else {
+            // can just skip element if it's in the right position
+            i++;
+        }
+    }
+
+    return pivot_index;
+}
+
+static void quick_sort_(Game *g, int start, int end)
+{
+    if (end - start <= 1) { return; }
+
+    // pivot_index will be selected at random
+    int pivot_index = partition(g, start, end, (int)((float)rand()/RAND_MAX*(end-start) + start));
+    if (g->quit) { return; }
+    quick_sort_(g, start, pivot_index);
+    quick_sort_(g, pivot_index+1, end);
+}
+
+static void quick_sort(Game *g) 
+{
+    quick_sort_(g, 0, g->ar_len);
+}
+
+SortFuncInterface sort_funcs[SORT_FUNCS_COUNT] = {
+    {selection_sort, "Selection Sort"},
+    {insertion_sort, "Insertion Sort"},
+    {bubble_sort, "Bubble Sort"},
+    {merge_insert_sort, "Merge Insert Sort"},
+    {merge_sort, "Merge Sort (Top-Down)"},
+    {merge_sort_bottom_up, "Merge Sort (Buttom-Up)"},
+    {counting_sort, "Counting Sort"},
+    {quick_sort, "Quick sort"},
+};
+
