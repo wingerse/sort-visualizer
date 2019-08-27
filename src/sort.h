@@ -2,7 +2,7 @@
 
 #include "game.h"
 
-#define SORT_FUNCS_COUNT 8
+#define SORT_FUNCS_COUNT 10
 
 typedef void SortFunc(Game *g);
 

@@ -54,6 +54,7 @@ static void bubble_sort(Game *g)
 {
     for (int i = g->ar_len-1; i > 0; i--) {
         g->marks[1] = i;
+        bool swapped = false;
         for (int j = 0; j < i; j++) {
             g->marks[2] = j;
             g->marks[0] = j+1;
@@ -62,6 +63,75 @@ static void bubble_sort(Game *g)
             g->comparisions++;
             if (g->ar[j] > g->ar[j+1]) {
                 swap(g->ar, j, j+1);
+                swapped = true;
+            }
+            Game_draw(g);
+            Game_delay(g);
+            if (g->quit) { return; }
+        }
+        if (!swapped) { break; } // is sorted
+    }
+}
+
+static void shaker_sort(Game *g)
+{
+    bool right = true;
+    int li = 0;
+    int ri = g->ar_len-1;
+    while (li != ri) {
+        bool swapped = false;
+        if (right) {
+            for (int i = li; i < ri; i++) {
+                g->marks[2] = i;
+                g->marks[0] = i+1;
+                g->ar_access += 2;
+                g->comparisions++;
+                if (g->ar[i] > g->ar[i+1]) {
+                    swap(g->ar, i, i+1);
+                    swapped = true;
+                }
+                Game_draw(g);
+                Game_delay(g);
+                if (g->quit) { return; }
+            }
+            right = false;
+            ri--;
+            if (!swapped) { break; } // is sorted
+        } else {
+            for (int i = ri; i > li; i--) {
+                g->marks[2] = i;
+                g->marks[0] = i-1;
+                g->ar_access += 2;
+                g->comparisions++;
+                if (g->ar[i] < g->ar[i-1]) {
+                    swap(g->ar, i, i-1);
+                    swapped = true;
+                }
+                Game_draw(g);
+                Game_delay(g);
+                if (g->quit) { return; }
+            }
+            right = true;
+            li++;
+            if (!swapped) { break; } // is sorted
+        }
+    }
+}
+
+static void bubble_sort_stupid(Game *g)
+{
+    for (int a = 0; a < g->ar_len-1; a++) {
+        g->marks[1] = a;
+        for (int i = 0; i < g->ar_len-1; i++) {
+            g->marks[2] = i;
+            g->marks[0] = i+1;
+            int item = g->ar[i];
+            int item_to_right = g->ar[i+1];
+            g->ar_access += 2;
+            g->comparisions++;
+            if (item > item_to_right) {
+                g->ar[i] = item_to_right;
+                g->ar[i+1] = item;
             }
             Game_draw(g);
             Game_delay(g);
@@ -313,6 +383,8 @@ SortFuncInterface sort_funcs[SORT_FUNCS_COUNT] = {
     {selection_sort, "Selection Sort"},
     {insertion_sort, "Insertion Sort"},
     {bubble_sort, "Bubble Sort"},
+    {shaker_sort, "Shaker Sort"},
+    {bubble_sort_stupid, "Bubble Sort (Stupid)"},
     {merge_insert_sort, "Merge Insert Sort"},
     {merge_sort, "Merge Sort (Top-Down)"},
     {merge_sort_bottom_up, "Merge Sort (Buttom-Up)"},
