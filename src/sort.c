@@ -312,6 +312,7 @@ static void counting_sort(Game *g)
     free(tmpar);
 }
 
+// Note: This was written before I learned the efficient partition algorithms.
 static int partition(Game *g, int start, int end, int pivot_index)
 {
     int pivot = g->ar[pivot_index];

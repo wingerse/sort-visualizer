@@ -13,6 +13,8 @@ At the moment, it has these sorting algorithms implemented:
 - Merge Insertion Sort (Merge sort with insertion merging)
 - Merge Sort (Top Down)
 - Merge Sort (Bottom Up)
+- Counting sort
+- Quick sort
 
 You can visualize the algorithms under the following views: 
 

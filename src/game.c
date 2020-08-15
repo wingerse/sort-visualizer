@@ -11,7 +11,7 @@
 
 void sdl_error(void) 
 {
-    printf(SDL_GetError());
+    printf("%s", SDL_GetError());
     printf("\n");
     exit(EXIT_FAILURE);
 }

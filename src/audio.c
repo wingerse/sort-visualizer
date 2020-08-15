@@ -6,7 +6,7 @@
 
 #define FREQ 44100
 
-static float calc_freq(Game *g, int value) { return value / (float)g->ar_len * 200.0f + 300; }
+static float calc_freq(Game *g, int value) { return (float)value / (float)g->ar_len * 200.0f + 300; }
 static float calc_k(float freq)            { return 2.0f*(float)M_PI / FREQ * freq; }
 
 static void audio_callback(void *userdata, Uint8 *stream, int len)
